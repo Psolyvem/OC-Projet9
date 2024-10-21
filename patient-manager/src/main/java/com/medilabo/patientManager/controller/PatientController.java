@@ -19,12 +19,6 @@ public class PatientController
 		this.patientService = patientService;
 	}
 
-	@GetMapping("/")
-	public String home()
-	{
-		return "coucou";
-	}
-
 	@GetMapping("/patients")
 	public Iterable<Patient> getPatients()
 	{
