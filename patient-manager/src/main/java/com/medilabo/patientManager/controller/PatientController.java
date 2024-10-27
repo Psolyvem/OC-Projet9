@@ -2,8 +2,10 @@ package com.medilabo.patientManager.controller;
 
 import com.medilabo.patientManager.model.Patient;
 import com.medilabo.patientManager.service.PatientService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.tinylog.Logger;
 
@@ -33,7 +35,7 @@ public class PatientController
 
 		if (patient.isEmpty())
 		{
-			Logger.info("Requested patient with id " + patient.get().getId() + " : not found");
+			Logger.info("Requested patient with id " + id + " : not found");
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
@@ -48,7 +50,7 @@ public class PatientController
 
 		if (patient == null)
 		{
-			Logger.info("Requested patient " + patient.getFirstname() + " " + patient.getLastname() + " : not found");
+			Logger.info("Requested patient " + firstname + " " + lastname + " : not found");
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
@@ -57,36 +59,51 @@ public class PatientController
 	}
 
 	@PostMapping("/patient")
-	public ResponseEntity<String> postPatient(@RequestBody Patient patient)
+	public ResponseEntity<String> postPatient(@RequestBody @Valid Patient patient, BindingResult result)
 	{
-		if (patientService.getPatientByFullName(patient.getFirstname(), patient.getLastname()) != null)
+		if (!result.hasErrors())
 		{
-			Logger.info("Unable to create patient " + patient.getFirstname() + " " + patient.getLastname() + " : already exists with id " + patient.getId());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to create patient data : already exists");
-		}
+			if (patientService.getPatientByFullName(patient.getFirstname(), patient.getLastname()) != null)
+			{
+				Logger.info("Unable to create patient " + patient.getFirstname() + " " + patient.getLastname() + " : already exists with id " + patient.getId());
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to create patient data : already exists");
+			}
 
-		patientService.createPatient(patient);
-		Logger.info("Created patient " + patient.getFirstname() + " " + patient.getLastname());
-		return ResponseEntity.status(HttpStatus.CREATED).body("Patient data created");
+			patientService.createPatient(patient);
+			Logger.info("Created patient " + patient.getFirstname() + " " + patient.getLastname());
+			return ResponseEntity.status(HttpStatus.CREATED).body("Patient data created");
+		}
+		else
+		{
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
 	}
 
-	@PatchMapping("/patient")
-	public ResponseEntity<String> patchPatient(@RequestBody Patient patient)
+	@PutMapping("/patient")
+	public ResponseEntity<String> updatePatient(@RequestBody @Valid Patient patient, BindingResult result)
 	{
-		if (patientService.getPatientById(patient.getId()).isEmpty())
+		if (!result.hasErrors())
 		{
-			Logger.info("Unable to update patient " + patient.getFirstname() + " " + patient.getLastname() + " : does not exist");
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Unable to update patient data : not found");
+			if (patientService.getPatientById(patient.getId()).isEmpty())
+			{
+				Logger.info("Unable to update patient " + patient.getFirstname() + " " + patient.getLastname() + " : does not exist");
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Unable to update patient data : not found");
+			}
+			if (patientService.getPatientByFullName(patient.getFirstname(), patient.getLastname()) != null && patient.getId() != patientService.getPatientByFullName(patient.getFirstname(), patient.getLastname()).getId())
+			{
+				Logger.info("Unable to update patient " + patient.getFirstname() + " " + patient.getLastname() + " : wrong id");
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to update patient data : patient exist but not under this id");
+			}
+
+			patientService.updatePatient(patient);
+			Logger.info("Updated patient " + patient.getFirstname() + " " + patient.getLastname());
+			return ResponseEntity.status(HttpStatus.OK).body("Patient data updated");
 		}
-		if (patientService.getPatientByFullName(patient.getFirstname(), patient.getLastname()) != null && patient.getId() != patientService.getPatientByFullName(patient.getFirstname(), patient.getLastname()).getId())
+		else
 		{
-			Logger.info("Unable to update patient " + patient.getFirstname() + " " + patient.getLastname() + " : wrong id");
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to update patient data : patient exist but not under this id");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 
-		patientService.updatePatient(patient);
-		Logger.info("Updated patient " + patient.getFirstname() + " " + patient.getLastname());
-		return ResponseEntity.status(HttpStatus.OK).body("Patient data updated");
 	}
 
 	@DeleteMapping(path = "/patient", params = "id")

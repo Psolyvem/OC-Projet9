@@ -1,8 +1,13 @@
 package com.medilabo.patientManager.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "patient")
@@ -12,9 +17,16 @@ public class Patient
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	int id;
+	@NotBlank(message = "First name is mandatory")
 	String firstname;
+	@NotBlank(message = "Last name is mandatory")
 	String lastname;
-	Date birthdate;
+	@Past
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Temporal(TemporalType.DATE)
+	@NotNull
+	LocalDate birthdate;
+	@NotBlank(message = "Gender is mandatory")
 	String gender;
 	String address;
 	String phoneNumber;
@@ -49,12 +61,12 @@ public class Patient
 		this.lastname = lastname;
 	}
 
-	public Date getBirthdate()
+	public LocalDate getBirthdate()
 	{
 		return birthdate;
 	}
 
-	public void setBirthdate(Date birthdate)
+	public void setBirthdate(LocalDate birthdate)
 	{
 		this.birthdate = birthdate;
 	}

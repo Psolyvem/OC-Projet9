@@ -1,13 +1,19 @@
 package com.medilabo.webclient.model;
 
-import java.sql.Date;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDate;
 
 public class Patient
 {
 	int id;
 	String firstname;
 	String lastname;
-	Date birthdate;
+	LocalDate birthdate;
 	String gender;
 	String address;
 	String phoneNumber;
@@ -42,12 +48,12 @@ public class Patient
 		this.lastname = lastname;
 	}
 
-	public Date getBirthdate()
+	public LocalDate getBirthdate()
 	{
 		return birthdate;
 	}
 
-	public void setBirthdate(Date birthdate)
+	public void setBirthdate(LocalDate birthdate)
 	{
 		this.birthdate = birthdate;
 	}

@@ -14,22 +14,7 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/patient/list">Bid List</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/curvePoint/list">Curve Points</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/rating/list">Ratings</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/trade/list">Trade</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/ruleName/list">Rule</a>
+                    <a class="nav-link" href="/web-client/">Home</a>
                 </li>
             </ul>
         </div>
@@ -42,7 +27,7 @@
         <div class="card">
             <div class="card-header d-flex align-items-center">
                 <h5 class="mb-0">Patients</h5>
-                <a type="button" class="btn btn-primary btn-sm ml-auto col-md-2" href="/patient/add">Add New</a>
+                <a type="button" class="btn btn-primary btn-sm ml-auto col-md-2" th:href="@{/web-client/patient/add}">Add New</a>
             </div>
             <div class="card-body">
                 <table class="table table-striped table-bordered table-hover text-center">
@@ -68,8 +53,8 @@
                         <td th:text="${patient.address}"></td>
                         <td th:text="${patient.phoneNumber}"></td>
                         <td style="width: 15%" class="text-center">
-                            <a th:href="@{/patient/update/{id}(id=${patient.id})}">Edit</a>&nbsp;|&nbsp;
-                            <a th:href="@{/patient/delete/{id}(id=${patient.id})}">Delete</a>
+                            <a th:href="@{/web-client/patient/{id}(id=${patient.id})}">View</a>&nbsp;|&nbsp;
+                            <a th:href="@{/web-client/patient/delete/{id}(id=${patient.id})}">Delete</a>
                         </td>
                     </tr>
                     </tbody>
