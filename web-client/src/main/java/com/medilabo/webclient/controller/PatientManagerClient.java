@@ -21,4 +21,7 @@ public interface PatientManagerClient
 
 	@PutMapping("/patient")
 	ResponseEntity<String> updatePatient(@RequestBody Patient patient);
+
+	@DeleteMapping("/patient?id={id}")
+	ResponseEntity<String> deletePatient(@PathVariable int id);
 }

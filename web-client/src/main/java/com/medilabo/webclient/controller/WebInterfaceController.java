@@ -4,6 +4,7 @@ import com.medilabo.webclient.model.Patient;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,12 +39,14 @@ public class WebInterfaceController
 		catch (IllegalArgumentException e)
 		{
 			Logger.error("Invalid patient id : " + id + ", unable to update.");
-			return "redirect:/web-client/";
+			model.addAttribute("patients", patientManagerClient.getPatients());
+			return "home";
 		}
 		catch (NoSuchElementException e)
 		{
 			Logger.error("Patient id not found");
-			return "redirect:/web-client/";
+			model.addAttribute("patients", patientManagerClient.getPatients());
+			return "home";
 		}
 
 		return "patient";
@@ -52,17 +55,27 @@ public class WebInterfaceController
 	@GetMapping("/patient/add")
 	public String createPatient(Model model)
 	{
+		model.addAttribute("patient", new Patient());
 		return "add";
 	}
 
 	@PostMapping("/patient/add")
 	public String validateCreate(Patient patient, BindingResult result, Model model)
 	{
-		Logger.info("trying to create patient");
-		Logger.info("Infos are " + patient.getFirstname() + " " + patient.getLastname() + ", born on " + patient.getBirthdate() + ", " + (patient.getGender().equals("M") ? "Male" : "Female") + ", " + patient.getAddress() + ", " + patient.getPhoneNumber());
+		Logger.info("Infos are " + patient.getFirstname() + " " + patient.getLastname() + ", born on " + patient.getBirthdate() + ", " + patient.getGender() + ", " + patient.getAddress() + ", " + patient.getPhoneNumber());
 		if (!result.hasErrors())
 		{
-			return "redirect:/patient";
+			try
+			{
+				patientManagerClient.createPatient(patient);
+				model.addAttribute("patients", patientManagerClient.getPatients());
+				return "home";
+			}
+			catch (IllegalArgumentException e)
+			{
+				Logger.info("Patient data invalid");
+			}
+
 		}
 		model.addAttribute("error", "true");
 		return "add";
@@ -79,7 +92,8 @@ public class WebInterfaceController
 		catch (IllegalArgumentException e)
 		{
 			Logger.error("Invalid patient id : " + id + ", unable to update.");
-			return "redirect:/patients";
+			model.addAttribute("patients", patientManagerClient.getPatients());
+			return "home";
 		}
 		return "edit";
 	}
@@ -105,5 +119,24 @@ public class WebInterfaceController
 		}
 		model.addAttribute("error", "true");
 		return "edit";
+	}
+
+	@GetMapping("/patient/delete/{id}")
+	public String deletePatient(@PathVariable("id") Integer id, Model model)
+	{
+		try
+		{
+			patientManagerClient.deletePatient(id);
+		}
+		catch (IllegalArgumentException e)
+		{
+			Logger.error("Invalid patient id : " + id + ", unable to delete.");
+		}
+		catch (NoSuchElementException e)
+		{
+			Logger.error("Invalid patient id : " + id + ", unable to delete.");
+		}
+		model.addAttribute("patients", patientManagerClient.getPatients());
+		return "home";
 	}
 }
