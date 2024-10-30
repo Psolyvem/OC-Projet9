@@ -1,4 +1,4 @@
-package com.medilabo.risk_analyzer;
+package com.medilabo.riskanalyzer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

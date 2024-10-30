@@ -20,7 +20,6 @@
             </ul>
         </div>
         <div class="navbar-text">
-            Blabla </b>
             <a type="button" class="btn btn-danger btn-sm" href="/logout">Logout</a>
         </div>
     </nav>
@@ -68,6 +67,15 @@
                         <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
                             <strong class="d-block text-gray-dark">Phone Number</strong>
                             <span th:text="${patient.phoneNumber}"></span>
+                        </p>
+                    </div>
+                    <div th:switch="${risk}" class="media text-muted pt-3">
+                        <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                            <strong class="d-block text-gray-dark">Risk</strong>
+                            <button th:text="${risk}" th:case="'None'" type="button" class="btn btn-secondary btn-sm"></button>
+                            <button th:text="${risk}" th:case="'Borderline'" type="button" class="btn btn-info btn-sm"></button>
+                            <button th:text="${risk}" th:case="'In Danger'" type="button" class="btn btn-warning btn-sm"></button>
+                            <button th:text="${risk}" th:case="'Early Onset'" type="button" class="btn btn-danger btn-sm"></button>
                         </p>
                     </div>
                 </div>

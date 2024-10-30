@@ -20,11 +20,13 @@ public class WebInterfaceController
 {
 	private final PatientManagerClient patientManagerClient;
 	private final NoteManagerClient noteManagerClient;
+	private final RiskAnalyzerClient riskAnalyzerClient;
 
-	public WebInterfaceController(PatientManagerClient patientManagerClient, NoteManagerClient noteManagerClient)
+	public WebInterfaceController(PatientManagerClient patientManagerClient, NoteManagerClient noteManagerClient, RiskAnalyzerClient riskAnalyzerClient)
 	{
 		this.patientManagerClient = patientManagerClient;
 		this.noteManagerClient = noteManagerClient;
+		this.riskAnalyzerClient = riskAnalyzerClient;
 	}
 
 	@GetMapping("/")
@@ -41,6 +43,7 @@ public class WebInterfaceController
 		{
 			model.addAttribute("patient", patientManagerClient.getPatientById(id));
 			model.addAttribute("notes", noteManagerClient.getNotesByPatientId(id));
+			model.addAttribute("risk", riskAnalyzerClient.getRisk(id));
 		}
 		catch (IllegalArgumentException e)
 		{
@@ -117,6 +120,7 @@ public class WebInterfaceController
 				patientManagerClient.updatePatient(patient);
 				model.addAttribute("patient", patientManagerClient.getPatientById(id));
 				model.addAttribute("notes", noteManagerClient.getNotesByPatientId(id));
+				model.addAttribute("risk", riskAnalyzerClient.getRisk(id));
 				return "patient";
 			}
 			catch (IllegalArgumentException e)
@@ -162,6 +166,7 @@ public class WebInterfaceController
 			noteManagerClient.createNote(note);
 			model.addAttribute("patient", patientManagerClient.getPatientById(note.getPatientId()));
 			model.addAttribute("notes", noteManagerClient.getNotesByPatientId(note.getPatientId()));
+			model.addAttribute("risk", riskAnalyzerClient.getRisk(id));
 			return "patient";
 		}
 		catch (IllegalArgumentException e)
@@ -198,6 +203,7 @@ public class WebInterfaceController
 			noteManagerClient.updateNote(id, note);
 			model.addAttribute("patient", patientManagerClient.getPatientById(note.getPatientId()));
 			model.addAttribute("notes", noteManagerClient.getNotesByPatientId(note.getPatientId()));
+			model.addAttribute("risk", riskAnalyzerClient.getRisk(note.getPatientId()));
 			return "patient";
 		}
 		catch (IllegalArgumentException e)
@@ -217,6 +223,7 @@ public class WebInterfaceController
 			noteManagerClient.deleteNote(id);
 			model.addAttribute("patient", patient);
 			model.addAttribute("notes", noteManagerClient.getNotesByPatientId(patient.getId()));
+			model.addAttribute("risk", riskAnalyzerClient.getRisk(patient.getId()));
 			return "patient";
 		}
 		catch (IllegalArgumentException | NoSuchElementException e)
