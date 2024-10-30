@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Date;
@@ -27,6 +28,7 @@ public class Patient
 	@NotNull
 	LocalDate birthdate;
 	@NotBlank(message = "Gender is mandatory")
+	@Size(min = 1, max = 1, message = "Only one character")
 	String gender;
 	String address;
 	String phoneNumber;

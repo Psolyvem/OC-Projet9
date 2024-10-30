@@ -1,14 +1,7 @@
-package com.medilabo.noteManager.model;
+package com.medilabo.webclient.model;
 
-import jakarta.persistence.Entity;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Entity
-@Document
 public class Note
 {
-	@Id
 	String id;
 	int patientId;
 	String content;
