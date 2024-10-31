@@ -1,0 +1,79 @@
+services:
+  discovery-service:
+    build: 
+      context: ./discovery-service
+    ports:
+      - "9500:9500"
+    network_mode: host
+    restart: always
+
+
+  gateway:
+    depends_on:
+      - discovery-service
+    build: 
+      context: ./gateway
+    ports:
+      - "9100:9100"
+    network_mode: host
+    restart: always
+
+  mysql:
+    build: 
+      context: ./patient-manager/db
+    ports:
+      - "3306:3306"
+    network_mode: host
+    restart: always
+
+  patient-manager:
+    depends_on:
+      - mysql
+      - gateway
+    build: 
+      context: ./patient-manager
+    ports:
+      - "9101:9101"
+    network_mode: host
+    restart: always
+
+  mongodb:
+    build: 
+      context: ./note-manager/db
+    ports:
+      - "27017:27017"
+    network_mode: host
+    restart: always
+
+  note-manager:
+    depends_on:
+      - mongodb
+      - gateway
+    build: 
+      context: ./note-manager
+    ports:
+      - "9102:9102"
+    network_mode: host
+    restart: always
+
+  risk-analyzer:
+    depends_on:
+      - patient-manager
+      - note-manager
+    build: 
+      context: ./risk-analyzer
+    ports:
+      - "9103:9103"
+    network_mode: host
+    restart: always
+
+  web-client:
+    depends_on:
+      - gateway
+      - risk-analyzer
+    build: 
+      context: ./web-client
+    ports:
+      - "9200:9200"
+    network_mode: host
+    restart: always
