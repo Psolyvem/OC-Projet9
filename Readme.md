@@ -12,7 +12,7 @@ Application de de gestion de dossiers médicaux créée dans le cadre d'un proje
 
 
 ## Usage
-Cette application en microservices est constituée de 6 modules : \
+Cette application en microservices est constituée de 6 modules : 
 - `discovery-service` : Serveur Eureka destiné a détécter les autres microservices 
 - `gateway` : Service de routage des requêtes qui gère également l'authentification avec Spring Security
 - `patient-manager` : API REST gérant les données des dossiers des patients stockés dans une BDD MySQL
